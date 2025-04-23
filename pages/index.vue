@@ -3,7 +3,7 @@
     <el-row class="w-full" :gutter="20" justify="center" align="middle">
       <el-col :sm="12" :xs="24">
         <!-- Container -->
-        <el-card >
+        <el-card>
           <template #header>
             <!-- header -->
             <div class="block">
@@ -17,29 +17,35 @@
           </template>
           <div>
             <el-form
+              ref="ruleFormRef"
               :model="formSearch"
+              :rules="rules"
               label-width="auto"
               label-position="top"
               style="max-width: 600px"
             >
               <el-row
-                class="w-full"
+                class="my-2 w-full"
                 :gutter="20"
                 justify="center"
                 align="middle"
               >
                 <el-col :span="8">
-                  <el-form-item :label="formLabel.score">
+                  <el-form-item :label="formLabel.score" prop="score">
                     <el-input
-                      v-model="formSearch.score"
+                      v-model.number="formSearch.score"
                       style="width: 100%"
-                      placeholder="0,00"
+                      placeholder="0.00"
+                      type="number"
+                      :step="0.25"
+                      :min="0"
+                      :max="30"
                       :suffix-icon="currencyVN"
                     />
                   </el-form-item>
                 </el-col>
                 <el-col :span="16">
-                  <el-form-item :label="formLabel.block">
+                  <el-form-item :label="formLabel.block" prop="block">
                     <el-input
                       v-model="formSearch.block"
                       style="width: 100%"
@@ -50,13 +56,13 @@
                 </el-col>
               </el-row>
               <el-row
-                class="w-full"
+                class="my-2 w-full"
                 :gutter="20"
                 justify="center"
                 align="middle"
               >
                 <el-col :span="8">
-                  <el-form-item :label="formLabel.year">
+                  <el-form-item :label="formLabel.year" prop="year">
                     <el-select v-model="formSearch.year" placeholder="2010">
                       <el-option
                         v-for="item in yearList"
@@ -75,7 +81,7 @@
                 </el-col>
               </el-row>
               <el-row
-                class="w-full"
+                class="my-2 w-full"
                 :gutter="20"
                 justify="center"
                 align="middle"
@@ -85,7 +91,7 @@
                     <el-button
                       class="w-full"
                       type="primary"
-                      @click="onSubmit"
+                      @click.prevent="submitForm(ruleFormRef)"
                       >{{ formLabel.submitBtn }}</el-button
                     >
                   </el-form-item>
@@ -109,8 +115,10 @@
             {{ "Không học,".toUpperCase() }}<br />
             {{ "Chỉ có bốc cứt".toUpperCase() }}
           </el-text>
-          <br/>
-          <el-text class="mx-1">{{ "- Câu này quen mà".toUpperCase() }}</el-text>
+          <br />
+          <el-text class="mx-1">{{
+            "- Câu này quen mà".toUpperCase()
+          }}</el-text>
         </div>
       </el-col>
     </el-row>
@@ -118,6 +126,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { FormInstance, FormRules } from "element-plus";
 import currencyVN from "~/components/icon/currencyVN.vue";
 import searchIcon from "~/components/icon/searchIcon.vue";
 const headerData = ref({
@@ -130,6 +139,7 @@ const footerData = ref({
 });
 
 const yearList = ref([
+  "2010",
   "2015",
   "2016",
   "2017",
@@ -151,15 +161,63 @@ const formLabel = ref({
   hint: "Bạn đỗ hay không là việc của bạn, chúng tôi chỉ check var xíu thôi.",
 });
 
-const formSearch = reactive({
-  score: "",
+interface RuleForm {
+  score: number;
+  block: string;
+  year: string;
+}
+
+const ruleFormRef = ref<FormInstance>();
+
+const formSearch = reactive<RuleForm>({
+  score: 0,
   block: "",
   year: "",
 });
 
-function onSubmit() {
-  console.log("submit!");
-}
+const rules = reactive<FormRules<RuleForm>>({
+  score: [
+    { required: true, message: "Điểm không được để trống", trigger: "blur" },
+    { type: "number", message: "Điểm phải là số", trigger: "blur" },
+    {
+      type: "number",
+      min: 0,
+      max: 30,
+      message: "Điểm không hợp lệ",
+      trigger: "blur",
+    },
+  ],
+  block: [
+    { required: true, message: "Khối không được để trống", trigger: "blur" },
+    { min: 2, max: 3, message: "Khối không hợp lệ", trigger: "blur" },
+  ],
+  year: [
+    { required: true, message: "Năm không được để trống", trigger: "blur" },
+    { min: 4, max: 4, message: "Năm không hợp lệ", trigger: "blur" },
+  ],
+});
+
+const router = useRouter();
+
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      // Submit form to search
+      router.push({
+        name: "result",
+        query: {
+          score: formSearch.score,
+          block: formSearch.block,
+          year: formSearch.year,
+        },
+      });
+      console.log("submit!");
+    } else {
+      console.log("error submit!", fields);
+    }
+  });
+};
 </script>
 
 <style lang="scss" scoped>
