@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+
+
+body {
+  font-family: Lexend, sans-serif;
+  background-color: #f0f0f0;
+}
+
+:root {
+  --el-color-primary: #E72166 !important;
+  --el-text-color-primary: #0C1136 !important;
+  --el-text-color-regular: #0C1136 !important;
+  --el-table-row-hover-bg-color: #E72166 !important;
+}
