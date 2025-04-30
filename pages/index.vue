@@ -31,7 +31,6 @@
               :rules="rules"
               label-width="auto"
               label-position="top"
-              style="max-width: 600px"
             >
               <el-row
                 class="my-2 w-full"
