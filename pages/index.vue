@@ -1,16 +1,16 @@
 <template>
   <div
-    class="flex h-full w-full flex-col items-center justify-center px-[12vw]"
+    class="flex h-full w-full flex-col items-center justify-center px-1 md:px-[6vw] xl:px-[12vw]"
   >
     <el-row
-      class="w-full space-y-4 md:space-y-0"
+      class="w-full space-y-4 lg:space-y-0"
       :gutter="20"
       justify="center"
       align="middle"
     >
-      <el-col :sm="12" :xs="24">
+      <el-col :sm="24" :xs="24" :md="12">
         <!-- Container -->
-        <el-card class="card-container w-full md:w-[26vw]">
+        <el-card class="card-container w-full lg:w-[40vw] xl:w-[28vw]">
           <template #header>
             <!-- header -->
             <div class="block">
@@ -146,9 +146,9 @@
           </template>
         </el-card>
       </el-col>
-      <el-col :sm="12" :xs="24">
+      <el-col :sm="24" :xs="24" :md="12">
         <!-- Quote -->
-        <div class="font-bold">
+        <div class="hidden font-bold md:block">
           <el-text style="color: white; font-size: 2.4rem; line-height: 1">
             {{ "Không học,".toUpperCase() }}<br />
             {{ "Chỉ có bốc cứt".toUpperCase() }}
